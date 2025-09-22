@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Transformador de Extractos Bancarios</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+  <h1>Transformador de Extractos Bancarios </h1>
+
+  <div class="container">
+    <div id="drop-area">
+      <p>Arrastra y suelta tu archivo aquí</p>
+      <p></p>
+      <label class="btn-file">
+        Seleccionar Archivo
+        <input type="file" id="fileElem" accept=".csv,.xls,.xlsx">
+      </label>
+      <p id="file-info"></p>
+    </div>
+
+    <div id="preview-container">
+      <h2>Previsualización</h2>
+      <div id="preview">
+        <table id="preview-table"></table>
+      </div>
+    </div>
+  </div>
+
+  <div id="buttons">
+    <button class="transform-btn" data-structure="1">
+      <img src="/logos/banco-exterior-ve-logo.png" alt="Logo Exterior">
+      <span>Exterior Jurídico</span>
+    </button>
+    <button class="transform-btn" data-structure="2">
+      <img src="/logos/banco-exterior-ve-logo.png" alt="Logo Exterior">
+      <span>Exterior Personales</span>
+    </button>
+    <button class="transform-btn" data-structure="3">
+      <img src="/logos/bdv-banco-de-venezuela-logo.png" alt="Logo Venezuela">
+      <span>Venezuela</span>
+    </button>
+    <button class="transform-btn" data-structure="4">
+      <img src="/logos/bancaribe-logo.png" alt="Logo Bancaribe">
+      <span>Bancaribe</span>
+    </button>
+    <button class="transform-btn" data-structure="5">
+      <img src="/logos/Banesco-Logo-.png" alt="Logo Banesco">
+      <span>Banesco</span>
+    </button>
+  </div>
+
+  <script src="script.js" type="module"></script>
+</body>
+</html>
