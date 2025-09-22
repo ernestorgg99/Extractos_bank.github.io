@@ -47,49 +47,50 @@ export const transformations = {
 },
 
     // Estructura 2: Exterior Personales
-    "2": (data) => {
-        let result = JSON.parse(JSON.stringify(data));
-        const finalHeaders = ['ETIQUETA', 'FECHA', 'REFERENCIA', 'IMPORTE'];
+"2": (data) => {
+    let result = JSON.parse(JSON.stringify(data));
+    const finalHeaders = ['ETIQUETA', 'FECHA', 'REFERENCIA', 'IMPORTE'];
 
-        // Eliminar columnas y limpiar datos
-        result = result.map(row => {
-            let newRow = [];
-            // Eliminar columnas 1 (índice 0), 3 (índice 2), 7 (índice 6)
-            newRow[0] = row[1]; // FECHA
-            newRow[1] = row[3]; // ETIQUETA
-            newRow[2] = row[5]; // REFERENCIA
-            newRow[3] = row[6]; // IMPORTE
-            return newRow;
-        });
-
-        // Asegurarse de que los encabezados son los esperados
-        const headers = ['FECHA', 'ETIQUETA', 'REFERENCIA', 'IMPORTE'];
-        if (result[0][0] !== 'Fecha') { // Manejar el caso de que la primera fila no sea el encabezado
-            result.unshift(headers);
+    // Función auxiliar para transformar el formato de fecha de Exterior Personales
+    const formatDateExterior = (dateStr) => {
+        if (!dateStr || typeof dateStr !== 'string') return dateStr;
+        const parts = dateStr.split('/');
+        if (parts.length === 3) {
+            const [month, day, year] = parts;
+            return `${day}/${month}/${year}`;
         }
+        return dateStr;
+    };
 
-        // Reordenar columnas y aplicar transformaciones
-        result = result.map((row, index) => {
-            const oldIndices = {
-                ETIQUETA: headers.indexOf('ETIQUETA'),
-                FECHA: headers.indexOf('FECHA'),
-                REFERENCIA: headers.indexOf('REFERENCIA'),
-                IMPORTE: headers.indexOf('IMPORTE')
-            };
-
-            const transformedRow = [
-                row[oldIndices.ETIQUETA],
-                row[oldIndices.FECHA],
-                row[oldIndices.REFERENCIA],
-                index > 0 ? parseAmount(row[oldIndices.IMPORTE]) : row[oldIndices.IMPORTE]
+    // Mapear, reordenar y transformar las filas de datos
+    result = result.map((row, index) => {
+        if (index === 0) {
+            // Se devuelve la fila de encabezados original tal cual para luego eliminarla
+            return row;
+        } else {
+            // Mapeo y normalización para las filas de datos:
+            // Columna 4 (índice 3) -> ETIQUETA
+            // Columna 2 (índice 1) -> FECHA
+            // Columna 5 (índice 4) -> REFERENCIA
+            // Columna 6 (índice 5) -> IMPORTE
+            const newRow = [
+                cleanLabel(row[3]),
+                formatDateExterior(row[1]),
+                row[4],
+                parseAmount(row[5])
             ];
-            transformedRow[0] = cleanLabel(transformedRow[0]);
-            return transformedRow;
-        });
+            return newRow;
+        }
+    });
 
-        result[0] = finalHeaders;
-        return result;
-    },
+    // Eliminar la primera fila que corresponde a los encabezados originales
+    result.shift();
+
+    // Insertar la fila final con los encabezados normalizados
+    result.unshift(finalHeaders);
+
+    return result;
+},
 
     // Estructura 3: Venezuela
     "3": (data) => {
